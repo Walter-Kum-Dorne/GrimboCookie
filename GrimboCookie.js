@@ -78,32 +78,3 @@ GrimboCookie.launch = function() {
 }
 
 if (Game.mods["Fortune Cookie"]) GrimboCookie.launch();
-
-//if (Game.hasBuff('Frenzy') && (Game.hasBuff('High-five') || Game.hasBuff('Congregation') || Game.hasBuff('Luxuriant harvest') || Game.hasBuff('Ore vein') || Game.hasBuff('Oiled-up') || Game.hasBuff('Juicy profits') || Game.hasBuff('Fervent adoration'))) {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
