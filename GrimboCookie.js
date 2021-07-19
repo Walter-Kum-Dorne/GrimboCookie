@@ -4,7 +4,9 @@ GrimboCookie.version = '1.0';
 GrimboCookie.GameVersion = '2.031';
 Game.registerMod(GrimboCookie.name, GrimboCookie);
 
+if (!Game.mods["CCSE"]) Game.LoadMod('https://klattmose.github.io/CookieClicker/CCSE.js');
 if (!Game.mods["Fortune Cookie"]) Game.LoadMod('https://klattmose.github.io/CookieClicker/FortuneCookie.js');
+if (!Game.mods["CookieMonster"]) Game.LoadMod('https://cookiemonsterteam.github.io/CookieMonster/dist/CookieMonster.js');
 
 var LoopShimmers;
 var LoopCombo;
@@ -28,18 +30,23 @@ GrimboCookie.Combo = function() {
 			clearInterval(LoopCombo);
 			M.castSpell(M.spellsById[6]);
 			Game.shimmers[0].pop();
-			Game.Earn(1500*Game.computedMouseCps);
+			setTimeout(GrimboCookie.Gain, 3000);
 			setTimeout(GrimboCookie.StartCombo, 30000);
 			var LoopRefill = setInterval(GrimboCookie.Refill, 1000);
 		} else if (FTHoF == "<td><span style=\"color:#4BB8F0;\">Click Frenzy</span><br/></td>") {
 			clearInterval(LoopCombo);
 			M.castSpell(M.spellsById[1]);
 			Game.shimmers[0].pop();
-			Game.Earn(1500*Game.computedMouseCps);
+			setTimeout(GrimboCookie.Gain, 3000);
 			setTimeout(GrimboCookie.StartCombo, 30000);
 			var LoopRefill = setInterval(GrimboCookie.Refill, 1000);
 		}
 	}
+}
+
+GrimboCookie.Gain = function() {
+	
+	Game.Earn(1500*Game.computedMouseCps);
 }
 
 GrimboCookie.Refill = function() {
