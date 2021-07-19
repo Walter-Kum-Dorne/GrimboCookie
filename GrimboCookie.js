@@ -2,6 +2,7 @@ if (GrimboCookie === undefined) {var GrimboCookie = {};}
 GrimboCookie.name = 'Grimoire Combo Cookies';
 GrimboCookie.version = '1.0';
 GrimboCookie.GameVersion = '2.031';
+Game.registerMod(GrimboCookie.name, GrimboCookie);
 
 if (!Game.mods["Fortune Cookie"]) Game.LoadMod('https://klattmose.github.io/CookieClicker/FortuneCookie.js');
 
