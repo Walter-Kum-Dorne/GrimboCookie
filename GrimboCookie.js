@@ -64,7 +64,7 @@ GrimboCookie.Refill = function() {
 			clearInterval(LoopRefill);
 		} else if (Gambler.indexOf('Spontaneous Edifice (Nothing)') == 95 || Gambler.indexOf('Resurrect Abomination') == 95 || Gambler.indexOf('Resurrect Abomination') == 93) {
 			M.castSpell(M.spellsById[6]);
-		} else if (Game.buffs == {} && (Gambler.indexOf('Stretch Time') == 95 || Gambler.indexOf('Stretch Time') == 93)) {
+		} else if (Object.keys(Game.buffs).length == 0 && (Gambler.indexOf('Stretch Time') == 95 || Gambler.indexOf('Stretch Time') == 93)) {
 			M.castSpell(M.spellsById[6]);
 		} else if (Gambler.indexOf('Haggler') == 95 || Gambler.indexOf('Haggler') == 93){
 			M.castSpell(M.spellsById[6]);
