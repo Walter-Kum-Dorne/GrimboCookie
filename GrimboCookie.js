@@ -4,9 +4,7 @@ GrimboCookie.version = '1.0';
 GrimboCookie.GameVersion = '2.031';
 Game.registerMod(GrimboCookie.name, GrimboCookie);
 
-if (!Game.mods["CCSE"]) Game.LoadMod('https://klattmose.github.io/CookieClicker/CCSE.js');
 if (!Game.mods["Fortune Cookie"]) Game.LoadMod('https://klattmose.github.io/CookieClicker/FortuneCookie.js');
-if (!Game.mods["CookieMonster"]) Game.LoadMod('https://cookiemonsterteam.github.io/CookieMonster/dist/CookieMonster.js');
 
 var LoopShimmers;
 var LoopCombo;
