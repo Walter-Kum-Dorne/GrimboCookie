@@ -20,17 +20,17 @@ GrimboCookie.Combo = function() {
 	var FTHoF = FortuneCookie.FateChecker(M.spellsCastTotal, (Game.season == "valentines" || Game.season == "easter") ? 1 : 0, M.getFailChance(M.spellsById[1]), false);
 	
 	if (Game.hasBuff('Frenzy') && Game.buffs['Frenzy'].time/Game.fps >= 30 && (Game.hasBuff('High-five') && Game.buffs['High-five'].time/Game.fps >= 30 || Game.hasBuff('Congregation') && Game.buffs['Congregation'].time/Game.fps >= 30 || Game.hasBuff('Luxuriant harvest') && Game.buffs['Luxuriant harvest'].time/Game.fps >= 30 || Game.hasBuff('Ore vein') && Game.buffs['Ore vein'].time/Game.fps >= 30 || Game.hasBuff('Oiled-up') && Game.buffs['Oiled-up'].time/Game.fps >= 30 || Game.hasBuff('Juicy profits') && Game.buffs['Juicy profits'].time/Game.fps >= 30 || Game.hasBuff('Fervent adoration') && Game.buffs['Fervent adoration'].time/Game.fps >= 30)) {
-		if (Gambler.indexOf('Click Frenzy') == 119) {
+		if (Gambler.indexOf('Click Frenzy') == 119 && M.magic >= M.getSpellCost(M.spellsById[6])) {
 			clearInterval(GrimboCookie.LoopCombo);
 			M.castSpell(M.spellsById[6]);
-			Game.shimmers[0].pop();
+			GrimboCookie.Shimmers();
 			setTimeout(GrimboCookie.Gain, 3000);
 			setTimeout(GrimboCookie.StartCombo, 30000);
 			GrimboCookie.LoopRefill = setInterval(GrimboCookie.Refill, 1000);
-		} else if (FTHoF == "<td><span style=\"color:#4BB8F0;\">Click Frenzy</span><br/></td>") {
+		} else if (FTHoF == "<td><span style=\"color:#4BB8F0;\">Click Frenzy</span><br/></td>" && M.magic >= M.getSpellCost(M.spellsById[6])) {
 			clearInterval(GrimboCookie.LoopCombo);
 			M.castSpell(M.spellsById[1]);
-			Game.shimmers[0].pop();
+			GrimboCookie.Shimmers();
 			setTimeout(GrimboCookie.Gain, 3000);
 			setTimeout(GrimboCookie.StartCombo, 30000);
 			GrimboCookie.LoopRefill = setInterval(GrimboCookie.Refill, 1000);
@@ -52,10 +52,10 @@ GrimboCookie.Refill = function() {
 	if (M.magic == M.magicM){
 		if (Gambler.indexOf('Free Sugar Lump') == 119 || Gambler.indexOf('Free Sugar Lump') == 117) {
 			M.castSpell(M.spellsById[6]);
-			Game.shimmers[0].pop();
+			GrimboCookie.Shimmers();
 		} else if (FTHoF=="<td><span style=\"color:##DAA560;\">Free Sugar Lump</span><br/></td>") {
 			M.castSpell(M.spellsById[1]);
-			Game.shimmers[0].pop();
+			GrimboCookie.Shimmers();
 		} else if (Gambler.indexOf('Click Frenzy') == 119 || FTHoF == "<td><span style=\"color:#4BB8F0;\">Click Frenzy</span><br/></td>") {
 			clearInterval(GrimboCookie.LoopRefill);
 		} else if (Gambler.indexOf('Spontaneous Edifice (Nothing)') == 95 || Gambler.indexOf('Resurrect Abomination') == 95 || Gambler.indexOf('Resurrect Abomination') == 93) {
@@ -77,4 +77,4 @@ GrimboCookie.StartCombo = function() {
 
 GrimboCookie.LoopShimmers = setInterval(GrimboCookie.Shimmers, 500);
 GrimboCookie.LoopRefill = setInterval(GrimboCookie.Refill, 1000);
-GrimboCookie.LoopCombo = setInterval(GrimboCookie.Combo, 3000);
+GrimboCookie.StartCombo();
