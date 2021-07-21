@@ -6,9 +6,9 @@ Game.registerMod(GrimboCookie.name, GrimboCookie);
 
 if (!Game.mods["Fortune Cookie"]) Game.LoadMod('https://klattmose.github.io/CookieClicker/FortuneCookie.js');
 
-var GrimboCookie.LoopShimmers;
-var GrimboCookie.LoopCombo;
-var GrimboCookie.LoopRefill;
+//var GrimboCookie.LoopShimmers;
+//var GrimboCookie.LoopCombo;
+//var GrimboCookie.LoopRefill;
 
 GrimboCookie.Shimmers = function() {
 	
@@ -30,14 +30,14 @@ GrimboCookie.Combo = function() {
 			Game.shimmers[0].pop();
 			setTimeout(GrimboCookie.Gain, 3000);
 			setTimeout(GrimboCookie.StartCombo, 30000);
-			var GrimboCookie.LoopRefill = setInterval(GrimboCookie.Refill, 1000);
+			GrimboCookie.LoopRefill = setInterval(GrimboCookie.Refill, 1000);
 		} else if (FTHoF == "<td><span style=\"color:#4BB8F0;\">Click Frenzy</span><br/></td>") {
 			clearInterval(GrimboCookie.LoopCombo);
 			M.castSpell(M.spellsById[1]);
 			Game.shimmers[0].pop();
 			setTimeout(GrimboCookie.Gain, 3000);
 			setTimeout(GrimboCookie.StartCombo, 30000);
-			var GrimboCookie.LoopRefill = setInterval(GrimboCookie.Refill, 1000);
+			GrimboCookie.LoopRefill = setInterval(GrimboCookie.Refill, 1000);
 		}
 	}
 }
@@ -79,6 +79,6 @@ GrimboCookie.StartCombo = function() {
 	var GrimboCookie.LoopCombo = setInterval(GrimboCookie.Combo, 3000);
 }
 
-var GrimboCookie.LoopShimmers = setInterval(GrimboCookie.Shimmers, 500);
-var GrimboCookie.LoopRefill = setInterval(GrimboCookie.Refill, 1000);
-var GrimboCookie.LoopCombo = setInterval(GrimboCookie.Combo, 3000);
+GrimboCookie.LoopShimmers = setInterval(GrimboCookie.Shimmers, 500);
+GrimboCookie.LoopRefill = setInterval(GrimboCookie.Refill, 1000);
+GrimboCookie.LoopCombo = setInterval(GrimboCookie.Combo, 3000);
