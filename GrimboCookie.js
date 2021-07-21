@@ -27,7 +27,7 @@ GrimboCookie.Combo = function() {
 			setTimeout(GrimboCookie.Gain, 3000);
 			setTimeout(GrimboCookie.StartCombo, 30000);
 			GrimboCookie.LoopRefill = setInterval(GrimboCookie.Refill, 1000);
-		} else if (FTHoF == "<td><span style=\"color:#4BB8F0;\">Click Frenzy</span><br/></td>" && M.magic >= M.getSpellCost(M.spellsById[6])) {
+		} else if (FTHoF == "<td><span style=\"color:#4BB8F0;\">Click Frenzy</span><br/></td>" && M.magic >= M.getSpellCost(M.spellsById[1])) {
 			clearInterval(GrimboCookie.LoopCombo);
 			M.castSpell(M.spellsById[1]);
 			GrimboCookie.Shimmers();
