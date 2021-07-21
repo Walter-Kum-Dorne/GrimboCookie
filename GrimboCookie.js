@@ -9,7 +9,7 @@ if (!Game.mods["Fortune Cookie"]) Game.LoadMod('https://klattmose.github.io/Cook
 GrimboCookie.Shimmers = function() {
 	
 	if (Game.shimmers[0]) {
-		Game.shimmers[0].pop()
+		Game.shimmers[0].pop();
 	}
 }
 
@@ -75,6 +75,14 @@ GrimboCookie.StartCombo = function() {
 	GrimboCookie.LoopCombo = setInterval(GrimboCookie.Combo, 3000);
 }
 
+GrimboCookie.Lump = function() {
+	
+	if (Date.now()-Game.lumpT > Game.lumpRipeAge) {
+		Game.clickLump();
+	}
+}
+
 GrimboCookie.LoopShimmers = setInterval(GrimboCookie.Shimmers, 500);
 GrimboCookie.LoopRefill = setInterval(GrimboCookie.Refill, 1000);
 GrimboCookie.StartCombo();
+GrimboCookie.LoopLump = setInterval(GrimboCookie.Lump, 10000);
