@@ -6,10 +6,6 @@ Game.registerMod(GrimboCookie.name, GrimboCookie);
 
 if (!Game.mods["Fortune Cookie"]) Game.LoadMod('https://klattmose.github.io/CookieClicker/FortuneCookie.js');
 
-//var GrimboCookie.LoopShimmers;
-//var GrimboCookie.LoopCombo;
-//var GrimboCookie.LoopRefill;
-
 GrimboCookie.Shimmers = function() {
 	
 	if (Game.shimmers[0]) {
@@ -76,7 +72,7 @@ GrimboCookie.Refill = function() {
 
 GrimboCookie.StartCombo = function() {
 	
-	var GrimboCookie.LoopCombo = setInterval(GrimboCookie.Combo, 3000);
+	GrimboCookie.LoopCombo = setInterval(GrimboCookie.Combo, 3000);
 }
 
 GrimboCookie.LoopShimmers = setInterval(GrimboCookie.Shimmers, 500);
