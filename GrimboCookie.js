@@ -137,38 +137,26 @@ var GrimboCookie = {
 		else return GrimboCookie.Config[configParam];
 	},
 	setConfig: (configParam, configValue) => {
-		console.log('2');
 		if (configValue === GrimboCookie.ConfigDefaults[configParam])
 			delete GrimboCookie.Config[configParam];
 		else GrimboCookie.Config[configParam] = configValue;
-		console.log('3');
 		GrimboCookie.saveConfig();
-		console.log('4');
 		return GrimboCookie.getConfig(configParam);
 	},
 	toggleConfig: (configParam) => {
-		console.log('1');
 		let val = GrimboCookie.setConfig(configParam, !GrimboCookie.getConfig(configParam));
-		console.log('5');
 		GrimboCookie.updateMenuView(configParam);
-		console.log('9');
 		return val;
 	},
 	updateMenuView: (configParam) => {
 		if (!GrimboCookie.getConfig(configParam)) {
-		console.log('6.1');
 			l(`GrimboCookie-${configParam}`).className = 'option off';
-		console.log('7.1');
 			if (l(`GrimboCookie-${configParam}`).textContent.slice(-2) == 'ON') {
-		console.log('8.1');
 				l(`GrimboCookie-${configParam}`).textContent = l(`GrimboCookie-${configParam}`).textContent.slice(0, -2) + 'OFF'
 			}
 		} else {
-		console.log('6.2');
 			l(`GrimboCookie-${configParam}`).className = 'option';
-		console.log('7.2');
 			if (l(`GrimboCookie-${configParam}`).textContent.slice(-3) == 'OFF') {
-		console.log('8.2');
 				l(`GrimboCookie-${configParam}`).textContent = l(`GrimboCookie-${configParam}`).textContent.slice(0, -3) + 'ON'
 			}
 		}
