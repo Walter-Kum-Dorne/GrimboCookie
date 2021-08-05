@@ -21,7 +21,7 @@ var GrimboCookie = {
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoNews','Auto Click News','Clicks on the fortune news ticker for you.'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoLump','Auto Click Lump','Harvests mature sugar lumps for you.'));
 				fragment.appendChild(GrimboCookie.Menu.subheading('Mini-game Enhancers'));
-				fragment.appendChild(GrimboCookie.Menu.toggleButton('grimoireCombo','Spell combo','If Frenzy and Building buffs have more than 30s left, cast Click Frenzy\'s spell (ftHoF) and earns 30s autoclick.'));
+				fragment.appendChild(GrimboCookie.Menu.toggleButton('grimoireCombo','Spell combo','If Frenzy and Building buffs have more than 30s left, cast Click Frenzy\'s spell (FTHoF) and earns 30s autoclick.'));
 				fragment.appendChild(GrimboCookie.Menu.slider('comboSlider', 'Combo', function(){GrimboCookie.setConfig('comboSlider', Math.round(l('GrimboCookie-comboSlider').value)); l('GrimboCookie-comboSliderRightText').innerHTML = Game.ObjectsById[GrimboCookie.getConfig('comboSlider')].name;}, 0, 17, 1, 'Buildings eligibility for Grimoire combo.'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('grimoireRefill','Refill Click Frenzy','Casts spells until Click Frenzy is ready for combo.'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoMarket','Auto Market','Buys low, sells high (needs >80%brokers).'));
