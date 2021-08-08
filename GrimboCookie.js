@@ -16,15 +16,15 @@ var GrimboCookie = {
 				let fragment = document.createDocumentFragment();
 				fragment.appendChild(GrimboCookie.Menu.heading('GrimboCookie Toggleables'));
 				fragment.appendChild(GrimboCookie.Menu.subheading('Auto Clickers'));
-				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoGolden','Auto Click Golden Cookies','Clicks any golden cookies for you.'));
-				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoReindeer','Auto Click Reindeer','Clicks on reindeer for you.'));
-				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoNews','Auto Click News','Clicks on the fortune news ticker for you.'));
-				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoLump','Auto Click Lump','Harvests mature sugar lumps for you.'));
+				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoGolden','Auto Click Golden Cookies','Clicks any golden cookies for you'));
+				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoReindeer','Auto Click Reindeer','Clicks on reindeer for you'));
+				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoNews','Auto Click News','Clicks on the fortune news ticker for you'));
+				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoLump','Auto Click Lump','Harvests mature sugar lumps for you'));
 				fragment.appendChild(GrimboCookie.Menu.subheading('Mini-game Enhancers'));
-				fragment.appendChild(GrimboCookie.Menu.toggleButton('grimoireCombo','Spell combo','If Frenzy and Building buffs have more than 30s left, cast Click Frenzy\'s spell (FTHoF) and earns 30s autoclick.'));
-				fragment.appendChild(GrimboCookie.Menu.slider('comboSlider', 'Combo', function(){GrimboCookie.setConfig('comboSlider', Math.round(l('GrimboCookie-comboSlider').value)); l('GrimboCookie-comboSliderRightText').innerHTML = Game.ObjectsById[GrimboCookie.getConfig('comboSlider')].name;}, 0, 17, 1, 'Buildings eligibility for Grimoire combo.'));
-				fragment.appendChild(GrimboCookie.Menu.toggleButton('grimoireRefill','Refill Click Frenzy','Casts spells until Click Frenzy is ready for combo.'));
-				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoMarket','Auto Market','Buys low, sells high (needs >80%brokers).'));
+				fragment.appendChild(GrimboCookie.Menu.toggleButton('grimoireCombo','Spell combo','If Frenzy and Building buffs have more than 30s left, cast Click Frenzy\'s spell (FTHoF) and earns 30s autoclick'));
+				fragment.appendChild(GrimboCookie.Menu.slider('comboSlider', 'Combo', function(){GrimboCookie.setConfig('comboSlider', Math.round(l('GrimboCookie-comboSlider').value)); l('GrimboCookie-comboSliderRightText').innerHTML = Game.ObjectsById[GrimboCookie.getConfig('comboSlider')].name;}, 0, 17, 1, 'Buildings eligibility for Grimoire combo'));
+				fragment.appendChild(GrimboCookie.Menu.toggleButton('grimoireRefill','Refill Click Frenzy','Casts spells until Click Frenzy is ready for combo'));
+				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoMarket','Auto Market','Buys low, sells high (needs >80%brokers)'));
 				
 				l('menu').childNodes[2].insertBefore(fragment, l('menu').childNodes[2].childNodes[l('menu').childNodes[2].childNodes.length - 1]);
 			}
@@ -73,7 +73,10 @@ var GrimboCookie = {
 				a.textContent = text + ' ON';
 			}
 			a.id = `GrimboCookie-${configParam}`;
-			a.onclick = () => GrimboCookie.toggleConfig(configParam);
+			a.onclick = () => {
+				GrimboCookie.toggleConfig(configParam);
+				PlaySound('snd/tick.mp3');
+			}
 			label.textContent = description;
 			div.className = 'listing';
 			div.appendChild(a);
@@ -81,29 +84,30 @@ var GrimboCookie = {
 			return div;
 		},
 		slider: (configParam, leftText, callback, min, max, step, description) => {
-			let div = document.createElement('div'), active = document.createElement('div'), left = document.createElement('div'), right = document.createElement('div'), input = document.createElement('input'), label = document.createElement('label');
+			let div = document.createElement('div'), box = document.createElement('div'), left = document.createElement('div'), right = document.createElement('div'), slider = document.createElement('input'), label = document.createElement('label');
 			left.style = 'float:left';
 			left.textContent = leftText;
 			right.id = `GrimboCookie-${configParam}RightText`;
 			right.style = 'float:right';
 			right.textContent = Game.ObjectsById[GrimboCookie.getConfig(configParam)].name;
-			input.id = `GrimboCookie-${configParam}`;
-			input.class = 'slider';
-			input.type = 'range';
-			input.style = 'clear:both';
-			input.min = min;
-			input.max = max;
-			input.step = step;
-			input.value = GrimboCookie.getConfig(configParam);
-			input.onchange = callback;
-			input.oninput = callback;
+			slider.id = `GrimboCookie-${configParam}`;
+			slider.class = 'slider';
+			slider.type = 'range';
+			slider.style = 'clear:both';
+			slider.min = min;
+			slider.max = max;
+			slider.step = step;
+			slider.value = GrimboCookie.getConfig(configParam);
+			slider.onchange = callback;
+			slider.oninput = callback;
+			slider.onmouseup = () => PlaySound('snd/tick.mp3');
 			label.textContent = description;
-			active.className = 'sliderBox';
-			active.appendChild(left);
-			active.appendChild(right);
-			active.appendChild(input);
+			box.className = 'sliderBox';
+			box.appendChild(left);
+			box.appendChild(right);
+			box.appendChild(slider);
 			div.className = 'listing';
-			div.appendChild(active);
+			div.appendChild(box);
 			div.appendChild(label);
 			return div;
 		},
@@ -247,7 +251,8 @@ var GrimboCookie = {
 					if (shimmer.type == "golden") { shimmer.pop() }
 				})
 				setTimeout(function() {Game.Earn(1500*Game.computedMouseCps);}, 3000);
-				setTimeout(function() {GrimboCookie.toggleConfig('grimoireCombo');}, 30000);
+				setTimeout(function() {GrimboCookie.setConfig('grimoireCombo', true);}, 30000);
+				setTimeout(function() {GrimboCookie.updateMenuView('grimoireCombo');}, 30010);
 				GrimboCookie.setConfig('grimoireRefill', true);
 				GrimboCookie.updateMenuView('grimoireRefill');
 			} else if (FTHoF == "<td><span style=\"color:#4BB8F0;\">Click Frenzy</span><br/></td>" && M.magic >= M.getSpellCost(M.spellsById[1])) {
@@ -257,7 +262,8 @@ var GrimboCookie = {
 					if (shimmer.type == "golden") { shimmer.pop() }
 				})
 				setTimeout(function() {Game.Earn(1500*Game.computedMouseCps);}, 3000);
-				setTimeout(function() {GrimboCookie.toggleConfig('grimoireCombo');}, 30000);
+				setTimeout(function() {GrimboCookie.setConfig('grimoireCombo', true);}, 30000);
+				setTimeout(function() {GrimboCookie.updateMenuView('grimoireCombo');}, 30010);
 				GrimboCookie.setConfig('grimoireRefill', true);
 				GrimboCookie.updateMenuView('grimoireRefill');
 			}
