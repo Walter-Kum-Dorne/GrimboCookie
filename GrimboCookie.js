@@ -22,7 +22,7 @@ var GrimboCookie = {
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoLump','Auto Click Lump','Harvests mature sugar lumps for you'));
 				fragment.appendChild(GrimboCookie.Menu.subheading('Mini-game Enhancers'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('grimoireCombo','Spell combo','If Frenzy and Building buffs have more than 30s left, cast Click Frenzy\'s spell (FTHoF) and earns 30s autoclick'));
-				fragment.appendChild(GrimboCookie.Menu.slider('comboSlider', 'Combo', function(){GrimboCookie.setConfig('comboSlider', Math.round(l('GrimboCookie-comboSlider').value)); l('GrimboCookie-comboSliderRightText').innerHTML = Game.ObjectsById[GrimboCookie.getConfig('comboSlider')].name;}, 0, 17, 1, 'Buildings eligibility for Grimoire combo'));
+				fragment.appendChild(GrimboCookie.Menu.slider('comboSlider', 'Combo', function(){GrimboCookie.setConfig('comboSlider', Math.round(l('GrimboCookie-comboSlider').value)); l('GrimboCookie-comboSliderRightText').textContent = Game.ObjectsById[GrimboCookie.getConfig('comboSlider')].name;}, 0, 17, 1, 'Buildings eligibility for Grimoire combo'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('grimoireRefill','Refill Click Frenzy','Casts spells until Click Frenzy is ready for combo'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoMarket','Auto Market','Buys low, sells high (needs >80%brokers)'));
 				
@@ -145,11 +145,11 @@ var GrimboCookie = {
 			delete GrimboCookie.Config[configParam];
 		else GrimboCookie.Config[configParam] = configValue;
 		GrimboCookie.saveConfig();
+		if (l(`GrimboCookie-${configParam}`) !== null && l(`GrimboCookie-${configParam}`).tagName == 'A') { GrimboCookie.updateMenuView(configParam); }
 		return GrimboCookie.getConfig(configParam);
 	},
 	toggleConfig: (configParam) => {
 		let val = GrimboCookie.setConfig(configParam, !GrimboCookie.getConfig(configParam));
-		GrimboCookie.updateMenuView(configParam);
 		return val;
 	},
 	updateMenuView: (configParam) => {
@@ -245,27 +245,23 @@ var GrimboCookie = {
 		let FTHoF = FortuneCookie.FateChecker(M.spellsCastTotal, (Game.season == "valentines" || Game.season == "easter") ? 1 : 0, M.getFailChance(M.spellsById[1]), false);
 		if (Game.hasBuff('Frenzy') && Game.buffs['Frenzy'].time/Game.fps >= 30 && (Game.hasBuff('High-five') && Game.buffs['High-five'].time/Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= 0 || Game.hasBuff('Congregation') && Game.buffs['Congregation'].time/Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= 1 || Game.hasBuff('Luxuriant harvest') && Game.buffs['Luxuriant harvest'].time/Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= 2 || Game.hasBuff('Ore vein') && Game.buffs['Ore vein'].time/Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= 3 || Game.hasBuff('Oiled-up') && Game.buffs['Oiled-up'].time/Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= 4 || Game.hasBuff('Juicy profits') && Game.buffs['Juicy profits'].time/Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= 5 || Game.hasBuff('Fervent adoration') && Game.buffs['Fervent adoration'].time/Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= 6 || Game.hasBuff('Manabloom') && Game.buffs['Manabloom'].time/Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= 7 || Game.hasBuff('Delicious lifeforms') && Game.buffs['Delicious lifeforms'].time/Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= 8 || Game.hasBuff('Breakthrough') && Game.buffs['Breakthrough'].time/Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= 9 || Game.hasBuff('Righteous cataclysm') && Game.buffs['Righteous cataclysm'].time/Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= 10 || Game.hasBuff('Golden ages') && Game.buffs['Golden ages'].time/Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= 11 || Game.hasBuff('Extra cycles') && Game.buffs['Extra cycles'].time/Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= 12 || Game.hasBuff('Solar flare') && Game.buffs['Solar flare'].time/Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= 13 || Game.hasBuff('Winning streak') && Game.buffs['Winning streak'].time/Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= 14 || Game.hasBuff('Macrocosm') && Game.buffs['Macrocosm'].time/Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= 15 || Game.hasBuff('Refactoring') && Game.buffs['Refactoring'].time/Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= 16 || Game.hasBuff('Cosmic nursery') && Game.buffs['Cosmic nursery'].time/Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= 17)) {
 			if (Gambler.indexOf('Click Frenzy') == 119 && M.magic >= M.getSpellCost(M.spellsById[6])) {
-				GrimboCookie.toggleConfig('grimoireCombo');
+				GrimboCookie.setConfig('grimoireCombo', false);
 				M.castSpell(M.spellsById[6]);
 				Game.shimmers.forEach(function(shimmer) {
 					if (shimmer.type == "golden") { shimmer.pop() }
 				})
 				setTimeout(function() {Game.Earn(1500*Game.computedMouseCps);}, 3000);
 				setTimeout(function() {GrimboCookie.setConfig('grimoireCombo', true);}, 30000);
-				setTimeout(function() {GrimboCookie.updateMenuView('grimoireCombo');}, 30010);
 				GrimboCookie.setConfig('grimoireRefill', true);
-				GrimboCookie.updateMenuView('grimoireRefill');
 			} else if (FTHoF == "<td><span style=\"color:#4BB8F0;\">Click Frenzy</span><br/></td>" && M.magic >= M.getSpellCost(M.spellsById[1])) {
-				GrimboCookie.toggleConfig('grimoireCombo');
+				GrimboCookie.setConfig('grimoireCombo', false);
 				M.castSpell(M.spellsById[1]);
 				Game.shimmers.forEach(function(shimmer) {
 					if (shimmer.type == "golden") { shimmer.pop() }
 				})
 				setTimeout(function() {Game.Earn(1500*Game.computedMouseCps);}, 3000);
 				setTimeout(function() {GrimboCookie.setConfig('grimoireCombo', true);}, 30000);
-				setTimeout(function() {GrimboCookie.updateMenuView('grimoireCombo');}, 30010);
 				GrimboCookie.setConfig('grimoireRefill', true);
-				GrimboCookie.updateMenuView('grimoireRefill');
 			}
 		}
 	},
@@ -285,7 +281,7 @@ var GrimboCookie = {
 					if (shimmer.type == "golden") { shimmer.pop() }
 				})
 			} else if (Gambler.indexOf('Click Frenzy') == 119 || FTHoF == "<td><span style=\"color:#4BB8F0;\">Click Frenzy</span><br/></td>") {
-				GrimboCookie.toggleConfig('grimoireRefill');
+				GrimboCookie.setConfig('grimoireRefill', false);
 			} else if (Gambler.indexOf('Spontaneous Edifice (Nothing)') == 95 || Gambler.indexOf('Resurrect Abomination') == 95 || Gambler.indexOf('Resurrect Abomination') == 93) {
 				M.castSpell(M.spellsById[6]);
 			} else if (Object.keys(Game.buffs).length == 0 && (Gambler.indexOf('Stretch Time') == 95 || Gambler.indexOf('Stretch Time') == 93)) {
