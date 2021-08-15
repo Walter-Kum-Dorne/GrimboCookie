@@ -24,7 +24,7 @@ var GrimboCookie = {
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('grimoireCombo','Spell combo','If Frenzy and Building buffs have more than 30s left, cast Click Frenzy\'s spell (FTHoF) and earns 30s autoclick'));
 				fragment.appendChild(GrimboCookie.Menu.slider('comboSlider', 'Combo', `${Game.ObjectsById[GrimboCookie.getConfig('comboSlider')].name}`, function(){GrimboCookie.setConfig('comboSlider', Math.round(l('GrimboCookie-comboSlider').value)); l('GrimboCookie-comboSliderRightText').textContent = Game.ObjectsById[GrimboCookie.getConfig('comboSlider')].name;}, 0, Game.ObjectsN - 1, 1, 'Buildings eligibility for Grimoire combo'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('grimoireRefill','Refill Click Frenzy','Casts spells until Click Frenzy is ready for combo'));
-				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoMarket','Auto Market','Buys low, sells high (needs >80%brokers)'));
+				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoMarket','Auto Market','Buys low, sells high (needs at least 80% hired brokers).'));
 				
 				l('menu').childNodes[2].insertBefore(fragment, l('menu').childNodes[2].childNodes[l('menu').childNodes[2].childNodes.length - 1]);
 			}
@@ -145,7 +145,10 @@ var GrimboCookie = {
 			delete GrimboCookie.Config[configParam];
 		else GrimboCookie.Config[configParam] = configValue;
 		GrimboCookie.saveConfig();
-		if (l(`GrimboCookie-${configParam}`) !== null && l(`GrimboCookie-${configParam}`).tagName == 'A') { GrimboCookie.updateMenuView(configParam); }
+		if (l(`GrimboCookie-${configParam}`) !== null && l(`GrimboCookie-${configParam}`).tagName == 'A') {
+			GrimboCookie.updateMenuView(configParam);
+			GrimboCookie.ticks[configParam].onTick();
+		}
 		return GrimboCookie.getConfig(configParam);
 	},
 	toggleConfig: (configParam) => {
@@ -300,9 +303,8 @@ var GrimboCookie = {
 	},
 	market: () => {
 		let M = Game.Objects['Bank'].minigame;
-		let Brokers = M.getMaxBrokers();
-		if (M.brokers > Brokers * 0.8) {
-			for (let i = 0; i < 16; i++) {
+		if (M.brokers >= M.getMaxBrokers() * 0.8) {
+			for (let i = 0; i < M.goodsById.length; i++) {
 				let MaxStock = M.getGoodMaxStock(M.goodsById[i]);
 				let RestVal = M.getRestingVal(i);
 				if (M.goodsById[i].val < RestVal / 2 && M.goodsById[i].stock < MaxStock / 2) {
@@ -312,6 +314,11 @@ var GrimboCookie = {
 					M.sellGood(i,10000);
 				}
 			}
+		} else {
+			GrimboCookie.setConfig('autoMarket', false);
+			let missingBrokers = M.getMaxBrokers() * 0.8 - M.brokers;
+			Game.Notify('Auto Market condition', 'Hire at least ' + missingBrokers + ' more Stockbrokers in order to activate Auto Market (hiring all of them is advised).', [1, 33]);
+			PlaySound('snd/spellFail.mp3',0.75);
 		}
 	},
 };
