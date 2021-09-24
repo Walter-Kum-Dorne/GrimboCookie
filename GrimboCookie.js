@@ -14,17 +14,16 @@ var GrimboCookie = {
 			GrimboCookie.OG.UpdateMenu();
 			if (Game.onMenu == 'prefs') {
 				let fragment = document.createDocumentFragment();
-				fragment.appendChild(GrimboCookie.Menu.heading('GrimboCookie Toggleables'));
-				fragment.appendChild(GrimboCookie.Menu.subheading('Auto Clickers'));
+				fragment.appendChild(GrimboCookie.Menu.heading('GrimboCookie'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoGolden','Auto Click Golden Cookies','Clicks any golden cookies'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoReindeer','Auto Click Reindeer','Clicks on reindeers'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoNews','Auto Click News','Clicks on the fortune news ticker'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoLump','Auto Click Lump','Harvests mature sugar lumps'));
-				fragment.appendChild(GrimboCookie.Menu.subheading('Mini-game Enhancers'));
+				fragment.appendChild(GrimboCookie.Menu.toggleButton('rerollStorm','Reroll Cookie Storm','Cancels Cookie Storm and spawn a new golden cookie'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('grimoireCombo','Spell combo','If Frenzy and Building buffs have more than 30s left, cast Click Frenzy\'s spell (FTHoF) and earns 30s autoclick'));
 				fragment.appendChild(GrimboCookie.Menu.slider('comboSlider', 'Combo', `${Game.ObjectsById[GrimboCookie.getConfig('comboSlider')].name}`, function(){GrimboCookie.setConfig('comboSlider', Math.round(l('GrimboCookie-comboSlider').value)); l('GrimboCookie-comboSliderRightText').textContent = Game.ObjectsById[GrimboCookie.getConfig('comboSlider')].name;}, 0, Game.ObjectsN - 1, 1, 'Buildings eligibility for Grimoire combo'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('grimoireRefill','Refill Click Frenzy','Casts spells until Click Frenzy is ready for combo'));
-				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoMarket','Auto Market','Buys low, sells high (needs at least 80% hired brokers).'));
+				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoMarket','Auto Market','Buys low, sells high (needs at least 80% hired brokers)'));
 				
 				l('menu').childNodes[2].insertBefore(fragment, l('menu').childNodes[2].childNodes[l('menu').childNodes[2].childNodes.length - 1]);
 			}
@@ -35,6 +34,7 @@ var GrimboCookie = {
 		'autoReindeer': false,
 		'autoNews': false,
 		'autoLump': false,
+		'rerollStorm': false,
 		'grimoireCombo': false,
 		'comboSlider': 5,
 		'grimoireRefill': false,
@@ -217,6 +217,17 @@ var GrimboCookie = {
 				if (Date.now()-Game.lumpT > Game.lumpRipeAge) Game.clickLump();
 			},
 		},
+		'rerollStorm': {
+			'intervalId': null,
+			'rate': 500,
+			'onTick': ()=>{
+				if (!GrimboCookie.getConfig('rerollStorm')) return;
+				if (Game.hasBuff('Cookie storm')) {
+					Game.buffs['Cookie storm'].time = 1;
+					Game.shimmerTypes['golden'].time = 0.95 * Game.shimmerTypes['golden'].maxTime;
+				}
+			},
+		},
 		'grimoireCombo': {
 			'intervalId': null,
 			'rate': 3000,
@@ -277,13 +288,13 @@ var GrimboCookie = {
 		let M = Game.Objects["Wizard tower"].minigame;
 		let Gambler = FortuneCookie.spellForecast(M.spellsById[6]);
 		let FTHoF = FortuneCookie.FateChecker(M.spellsCastTotal, (Game.season == "valentines" || Game.season == "easter") ? 1 : 0, M.getFailChance(M.spellsById[1]), false);
-		if (M.magic == M.magicM){
+		if (M.magic >= 0.95 * M.magicM){
 			if (Gambler.indexOf('Free Sugar Lump') == 119 || Gambler.indexOf('Free Sugar Lump') == 117) {
 				M.castSpell(M.spellsById[6]);
 				Game.shimmers.forEach(function(shimmer) {
 					if (shimmer.type == "golden") { shimmer.pop() }
 				})
-			} else if (FTHoF=="<td><span style=\"color:##DAA560;\">Free Sugar Lump</span><br/></td>") {
+			} else if (FTHoF == "<td><span style=\"color:#DAA560;\">Free Sugar Lump</span><br/></td>") {
 				M.castSpell(M.spellsById[1]);
 				Game.shimmers.forEach(function(shimmer) {
 					if (shimmer.type == "golden") { shimmer.pop() }
