@@ -18,7 +18,7 @@ var GrimboCookie = {
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoGolden','Auto Click Golden Cookies','Clicks any golden cookies'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoReindeer','Auto Click Reindeer','Clicks on reindeers'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoNews','Auto Click News','Clicks on the fortune news ticker'));
-				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoLump','Auto Click Lump','Harvests mature sugar lumps'));
+				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoLump','Auto Click Lump','Harvests mature sugar lumps and max out output'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('rerollStorm','Reroll Cookie Storm','Cancels Cookie Storm and spawn a new golden cookie'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('grimoireCombo','Spell combo','If Frenzy and Building buffs have more than 30s left, cast Click Frenzy\'s spell (FTHoF) and earns 30s autoclick'));
 				fragment.appendChild(GrimboCookie.Menu.slider('comboSlider', 'Combo', `${Game.ObjectsById[GrimboCookie.getConfig('comboSlider')].name}`, function(){GrimboCookie.setConfig('comboSlider', Math.round(l('GrimboCookie-comboSlider').value)); l('GrimboCookie-comboSliderRightText').textContent = Game.ObjectsById[GrimboCookie.getConfig('comboSlider')].name;}, 0, Game.ObjectsN - 1, 1, 'Buildings eligibility for Grimoire combo'));
@@ -214,7 +214,29 @@ var GrimboCookie = {
 			'rate': 10000,
 			'onTick': ()=>{
 				if (!GrimboCookie.getConfig('autoLump')) return;
-				if (Date.now()-Game.lumpT > Game.lumpRipeAge) Game.clickLump();
+				if (Date.now() - Game.lumpT > Game.lumpMatureAge) {
+					let Lump = Game.lumps;
+					let Type = Game.lumpCurrentType
+					Game.clickLump();
+					switch (Type) {
+						case 0:
+							Game.gainLumps(1 - Game.lumps + Lump);
+							break;
+						case 1:
+							Game.gainLumps(2 - Game.lumps + Lump);
+							break;
+						case 2:
+							Game.gainLumps(7 - Game.lumps + Lump);
+							break;
+						case 3:
+							Game.gainLumps(2 - Game.lumps + Lump);
+							break;
+						case 4:
+							Game.gainLumps(3 - Game.lumps + Lump);
+							break;
+					}
+					
+				}
 			},
 		},
 		'rerollStorm': {
