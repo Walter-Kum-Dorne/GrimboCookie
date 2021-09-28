@@ -216,7 +216,7 @@ var GrimboCookie = {
 				if (!GrimboCookie.getConfig('autoLump')) return;
 				if (Date.now() - Game.lumpT > Game.lumpMatureAge) {
 					let Lump = Game.lumps;
-					let Type = Game.lumpCurrentType
+					let Type = Game.lumpCurrentType;
 					Game.clickLump();
 					switch (Type) {
 						case 0:
