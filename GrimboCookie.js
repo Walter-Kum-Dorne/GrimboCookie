@@ -426,12 +426,12 @@ var GrimboCookie = {
 			} else if (FTHoF[0].indexOf('Free Sugar Lump') > -1) {
 				M.castSpell(M.spellsById[1]);
 				GrimboCookie.pop();
-			} else if (Game.canLumps && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 4 && M.magicM >= 2 * GamblerCost && M.magicM >= 4 * GamblerCost - 100) {
+			} else if (Game.canLumps() && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 4 && M.magicM >= 2 * GamblerCost && M.magicM >= 4 * GamblerCost - 100) {
 				if (Gambler[1].indexOf('Building Special') > -1 && Gambler[2].indexOf('Building Special') > -1 && Gambler[3].indexOf('Building Special') > -1 && Gambler[4].indexOf('Click Frenzy') > -1) {
 					GrimboCookie.setConfig('comboState', 1);
 					GrimboCookie.setConfig('grimoireRefill', false);
 				}
-			} else if (Game.canLumps && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 3 && M.magicM >= 2 * GamblerCost && M.magicM >= 3 * GamblerCost - 100) {
+			} else if (Game.canLumps() && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 3 && M.magicM >= 2 * GamblerCost && M.magicM >= 3 * GamblerCost - 100) {
 				if (Gambler[1].indexOf('Building Special') > -1 && Gambler[2].indexOf('Building Special') > -1 && Gambler[3].indexOf('Click Frenzy') > -1) {
 					GrimboCookie.setConfig('comboState', 2);
 					GrimboCookie.setConfig('grimoireRefill', false);
@@ -441,12 +441,12 @@ var GrimboCookie = {
 					GrimboCookie.setConfig('comboState', 3);
 					GrimboCookie.setConfig('grimoireRefill', false);
 				}
-			} else if (Game.canLumps && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 2 && M.magicM >= FTHoHCost + GamblerCost - 100) {
+			} else if (Game.canLumps() && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 2 && M.magicM >= FTHoHCost + GamblerCost - 100) {
 				if (FTHoF[0].indexOf('Building Special') > -1 && Gambler[2].indexOf('Click Frenzy') > -1) {
 					GrimboCookie.setConfig('comboState', 4);
 					GrimboCookie.setConfig('grimoireRefill', false);
 				}
-			} else if (Game.canLumps && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 2 && M.magicM >= 2 * FTHoFCost - 100) {
+			} else if (Game.canLumps() && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 2 && M.magicM >= 2 * FTHoFCost - 100) {
 				if (FTHoF[0].indexOf('Building Special') > -1 && FTHoF[1].indexOf('Click Frenzy') > -1) {
 					GrimboCookie.setConfig('comboState', 5);
 					GrimboCookie.setConfig('grimoireRefill', false);
