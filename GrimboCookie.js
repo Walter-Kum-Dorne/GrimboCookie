@@ -411,7 +411,7 @@ var GrimboCookie = {
 		GrimboCookie.pop();
 		let M = Game.Objects["Wizard tower"].minigame;
 		let Gambler = FortuneCookie.spellForecast(M.spellsById[6]).split("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		let FTHoF[];
+		let FTHoF;
 		for (let i = 0; i < FortuneCookie.config.spellForecastLength -1; i++) {
 			FTHoF[i] = FortuneCookie.FateChecker(M.spellsCastTotal + i, (Game.season == "valentines" || Game.season == "easter") ? 1 : 0, M.getFailChance(M.spellsById[1]), false);
 		}
