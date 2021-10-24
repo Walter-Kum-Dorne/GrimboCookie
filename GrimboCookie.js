@@ -143,9 +143,11 @@ var GrimboCookie = {
 			delete GrimboCookie.Config[configParam];
 		else GrimboCookie.Config[configParam] = configValue;
 		GrimboCookie.saveConfig();
-		if (l(`GrimboCookie-${configParam}`) !== null && GrimboCookie.ticks[configParam] !== undefined && l(`GrimboCookie-${configParam}`).tagName == 'A') {
+		if (l(`GrimboCookie-${configParam}`) !== null && l(`GrimboCookie-${configParam}`).tagName == 'A') {
 			GrimboCookie.updateMenuView(configParam);
-			GrimboCookie.ticks[configParam].onTick();
+			if (GrimboCookie.ticks[configParam] !== undefined) {
+				GrimboCookie.ticks[configParam].onTick();
+			}
 		}
 		return GrimboCookie.getConfig(configParam);
 	},
