@@ -282,7 +282,7 @@ var GrimboCookie = {
 	combo: () => {
 		if (lump <= 102) {
 			GrimboCookie.setConfig('grimoireCombo', false);
-			setTimeout(function() {GrimboCookie.setConfig('grimoireCombo', true);}, Game.lumpT + Game.lumpMatureAge - Date.now() + 15 000);
+			setTimeout(function() {GrimboCookie.setConfig('grimoireCombo', true);}, Game.lumpT + Game.lumpMatureAge - Date.now() + 15000);
 			Game.Notify('Lump shortage', 'Get more Sugar Lumps for sugar combo. Next harvest (and combo auto activation) in ' + Math.round((Game.lumpT + Game.lumpMatureAge - Date.now()) / 360000) / 10 + ' hours.', [23, 14], Game.lumpT + Game.lumpMatureAge - Date.now());
 			return;
 		}
