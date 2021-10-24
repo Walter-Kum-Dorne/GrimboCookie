@@ -289,7 +289,7 @@ var GrimboCookie = {
 		GrimboCookie.pop();
 		let cast = 0;
 		let M = Game.Objects["Wizard tower"].minigame;
-		if (Game.hasBuff('Frenzy') && Game.buffs['Frenzy'].time / Game.fps >= 30 *  && M.magic == M.magicM) {
+		if (M.magic == M.magicM && Game.hasBuff('Frenzy') && Game.buffs['Frenzy'].time / Game.fps >= 30) {
 			for (let i = 0; i < Game.ObjectsN - 1; i++) {
 				let buff = Game.goldenCookieBuildingBuffs[Game.ObjectsById[i].name][0];
 				if (Game.hasBuff(buff) && Game.buffs[buff].time / Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= i) cast = 1;
