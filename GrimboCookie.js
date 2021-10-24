@@ -6,7 +6,7 @@ if (typeof GrimboCookie !== 'undefined') {
 
 var GrimboCookie = {
 	name: 'Grimoire Combo Cookies',
-	version: '2.0',
+	version: '2.1',
 	GameVersion: '2.031',
 	OG: {}, // Original Game Data
 	Game: { // Our overrides
@@ -21,6 +21,7 @@ var GrimboCookie = {
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoLump','Auto Click Lump','Harvests mature sugar lumps and max out output'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('rerollStorm','Reroll Cookie Storm','Cancels Cookie Storm and spawn a new golden cookie'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('grimoireCombo','Spell combo','If Frenzy and Building buffs have more than 30s left, cast Click Frenzy\'s spell (FTHoF) and earns 30s autoclick'));
+				fragment.appendChild(GrimboCookie.Menu.toggleButton('comboSugar','Combo Sugar','Use sugar lump to cast more Building Spells'));
 				fragment.appendChild(GrimboCookie.Menu.slider('comboSlider', 'Combo', `${Game.ObjectsById[GrimboCookie.getConfig('comboSlider')].name}`, function(){GrimboCookie.setConfig('comboSlider', Math.round(l('GrimboCookie-comboSlider').value)); l('GrimboCookie-comboSliderRightText').textContent = Game.ObjectsById[GrimboCookie.getConfig('comboSlider')].name;}, 0, Game.ObjectsN - 1, 1, 'Buildings eligibility for Grimoire combo'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('grimoireRefill','Refill Click Frenzy','Casts spells until Click Frenzy is ready for combo'));
 				fragment.appendChild(GrimboCookie.Menu.toggleButton('autoMarket','Auto Market','Buys low, sells high (needs at least 80% hired brokers)'));
@@ -29,19 +30,21 @@ var GrimboCookie = {
 			}
 		},
 	},
-	ConfigDefaults: { // The default value for the configs
+	ConfigDefaults: {
 		'autoGolden': false,
 		'autoReindeer': false,
 		'autoNews': false,
 		'autoLump': false,
 		'rerollStorm': false,
 		'grimoireCombo': false,
+		'comboSugar': false,
+		'comboState': 0,
 		'comboSlider': 5,
 		'grimoireRefill': false,
 		'autoMarket': false,
 	},
 	Config: {}, // User settings
-	Init: () => { // Initialize the add-on.
+	Init: () => {
 		if (!Game || !Game.version || !Game.updateLog) {
 			alert('The game isn\'t loaded yet or this isn\'t the game.');
 			return;
@@ -117,11 +120,6 @@ var GrimboCookie = {
 			heading.textContent = text;
 			return heading;
 		},
-		subheading: (text) => {
-			let subheading = GrimboCookie.Menu.heading(text);
-			subheading.style.fontSize = '17px';
-			return subheading;
-		},
 	},
 	saveConfig: () => {
 		localStorage.setItem('GrimboCookie', JSON.stringify(GrimboCookie.Config));
@@ -186,9 +184,7 @@ var GrimboCookie = {
 			'rate': 500,
 			'onTick': ()=>{
 				if (!GrimboCookie.getConfig('autoGolden')) return;
-				Game.shimmers.forEach(function(shimmer) {
-					if (shimmer.type == "golden") { shimmer.pop() }
-				})
+				GrimboCookie.pop();
 			},
 		},
 		'autoReindeer': {
@@ -197,7 +193,9 @@ var GrimboCookie = {
 			'onTick': ()=>{
 				if (!GrimboCookie.getConfig('autoReindeer')) return;
 				Game.shimmers.forEach(function(shimmer) {
-					if (shimmer.type == 'reindeer') { shimmer.pop() }
+					if (shimmer.type == 'reindeer') {
+						shimmer.pop();
+					}
 				})
 			},
 		},
@@ -233,7 +231,6 @@ var GrimboCookie = {
 							break;
 						case 4:
 							Game.gainLumps(3 - Game.lumps + Lump);
-							break;
 					}
 					
 				}
@@ -275,29 +272,133 @@ var GrimboCookie = {
 			},
 		},
 	},
+	pop: () => {
+		Game.shimmers.forEach(function(shimmer) {
+			if (shimmer.type == "golden") {
+				shimmer.pop();
+			}
+		})
+	},
 	combo: () => {
-		let M = Game.Objects["Wizard tower"].minigame;
-		let Gambler = FortuneCookie.spellForecast(M.spellsById[6]);
-		let FTHoF = FortuneCookie.FateChecker(M.spellsCastTotal, (Game.season == "valentines" || Game.season == "easter") ? 1 : 0, M.getFailChance(M.spellsById[1]), false);
+		if (lump <= 102) {
+			GrimboCookie.setConfig('grimoireCombo', false);
+			setTimeout(function() {GrimboCookie.setConfig('grimoireCombo', true);}, Game.lumpT + Game.lumpMatureAge - Date.now() + 15 000);
+			Game.Notify('Lump shortage', 'Get more Sugar Lumps for sugar combo. Next harvest (and combo auto activation) in ' + Math.round((Game.lumpT + Game.lumpMatureAge - Date.now()) / 360000) / 10 + ' hours.', [23, 14], Game.lumpT + Game.lumpMatureAge - Date.now());
+			return;
+		}
+		GrimboCookie.pop();
 		let cast = 0;
-		if (Game.hasBuff('Frenzy') && Game.buffs['Frenzy'].time/Game.fps >= 30) {
-			for (let i=0; i < Game.ObjectsN - 1; i++) {
+		let M = Game.Objects["Wizard tower"].minigame;
+		if (Game.hasBuff('Frenzy') && Game.buffs['Frenzy'].time / Game.fps >= 30 *  && M.magic == M.magicM) {
+			for (let i = 0; i < Game.ObjectsN - 1; i++) {
 				let buff = Game.goldenCookieBuildingBuffs[Game.ObjectsById[i].name][0];
-				if (Game.hasBuff(buff) && Game.buffs[buff].time/Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= i) cast = 1;
+				if (Game.hasBuff(buff) && Game.buffs[buff].time / Game.fps >= 30 && GrimboCookie.getConfig('comboSlider') >= i) cast = 1;
 			}
 		}
 		if (cast == 1) {
-			if (Gambler.indexOf('Click Frenzy') == 119 && M.magic >= M.getSpellCost(M.spellsById[6])) {
-				M.castSpell(M.spellsById[6]);
-				cast = 2;
-			} else if (FTHoF == "<td><span style=\"color:#4BB8F0;\">Click Frenzy</span><br/></td>" && M.magic >= M.getSpellCost(M.spellsById[1])) {
-				M.castSpell(M.spellsById[1]);
-				cast = 2;
+			let GamblerCost = 8 + 0.35 * M.magicM
+			let FTHoFCost = 10 + 0.6 * M.magicM
+			switch (GrimboCookie.getConfig('comboState')) {
+				case 1:
+					if (!Game.canRefillLump()) {
+						GrimboCookie.setConfig('grimoireCombo', false);
+						setTimeout(function() {GrimboCookie.setConfig('grimoireCombo', true);}, Game.lumpRefill);
+						Game.Notify('Lump cooldown', 'Sugar Lumps refill is under cooldown. Wait ' + Math.round(Game.lumpRefill / 180) / 10 + ' minutes.', [29, 17]);
+						break;
+					}
+					if (GrimboCookie.getConfig('comboSugar') && M.magic >= 2 * GamblerCost && M.magic >= 4 * GamblerCost - 100) {
+						M.castSpell(M.spellsById[6]);
+						GrimboCookie.pop();
+						M.castSpell(M.spellsById[6]);
+						GrimboCookie.pop();
+						M.lumpRefill.click();
+						M.castSpell(M.spellsById[6]);
+						GrimboCookie.pop();
+						M.castSpell(M.spellsById[6]);
+						GrimboCookie.pop();
+						cast = 2;
+					} else {
+						GrimboCookie.setConfig('grimoireRefill', true);
+					}
+					break;
+				case 2:
+					if (!Game.canRefillLump()) {
+						GrimboCookie.setConfig('grimoireCombo', false);
+						setTimeout(function() {GrimboCookie.setConfig('grimoireCombo', true);}, Game.lumpRefill);
+						Game.Notify('Lump cooldown', 'Sugar Lumps refill is under cooldown. Wait ' + Math.round(Game.lumpRefill / 180) / 10 + ' minutes.', [29, 17]);
+						break;
+					}
+					if (GrimboCookie.getConfig('comboSugar') && M.magic >= 2 * GamblerCost && M.magic >= 3 * GamblerCost - 100) {
+						M.castSpell(M.spellsById[6]);
+						GrimboCookie.pop();
+						M.castSpell(M.spellsById[6]);
+						GrimboCookie.pop();
+						M.lumpRefill.click();
+						M.castSpell(M.spellsById[6]);
+						GrimboCookie.pop();
+						cast = 2;
+					} else {
+						GrimboCookie.setConfig('grimoireRefill', true);
+					}
+					break;
+				case 3:
+					if (M.magic >= 2 * GamblerCost) {
+						M.castSpell(M.spellsById[6]);
+						GrimboCookie.pop();
+						M.castSpell(M.spellsById[6]);
+						GrimboCookie.pop();
+						cast = 2;
+					} else {
+						GrimboCookie.setConfig('grimoireRefill', true);
+					}
+					break;
+				case 4:
+					if (!Game.canRefillLump()) {
+						GrimboCookie.setConfig('grimoireCombo', false);
+						setTimeout(function() {GrimboCookie.setConfig('grimoireCombo', true);}, Game.lumpRefill);
+						Game.Notify('Lump cooldown', 'Sugar Lumps refill is under cooldown. Wait ' + Math.round(Game.lumpRefill / 180) / 10 + ' minutes.', [29, 17]);
+						break;
+					}
+					if (GrimboCookie.getConfig('comboSugar') && M.magic >= FTHoHCost + GamblerCost - 100) {
+						M.castSpell(M.spellsById[1]);
+						GrimboCookie.pop();
+						M.lumpRefill.click();
+						M.castSpell(M.spellsById[6]);
+						GrimboCookie.pop();
+						cast = 2;
+					} else {
+						GrimboCookie.setConfig('grimoireRefill', true);
+					}
+					break;
+				case 5:
+					if (!Game.canRefillLump()) {
+						GrimboCookie.setConfig('grimoireCombo', false);
+						setTimeout(function() {GrimboCookie.setConfig('grimoireCombo', true);}, Game.lumpRefill);
+						Game.Notify('Lump cooldown', 'Sugar Lumps refill is under cooldown. Wait ' + Math.round(Game.lumpRefill / 180) / 10 + ' minutes.', [29, 17]);
+						break;
+					}
+					if (GrimboCookie.getConfig('comboSugar') && M.magic >= 2 * FTHoFCost - 100) {
+						M.castSpell(M.spellsById[1]);
+						GrimboCookie.pop();
+						M.lumpRefill.click();
+						M.castSpell(M.spellsById[1]);
+						GrimboCookie.pop();
+						cast = 2;
+					} else {
+						GrimboCookie.setConfig('grimoireRefill', true);
+					}
+					break;
+				case 6:
+					M.castSpell(M.spellsById[6]);
+					GrimboCookie.pop();
+					cast = 2;
+					break;
+				case 7:
+					M.castSpell(M.spellsById[1]);
+					GrimboCookie.pop();
+					cast = 2;
 			}
 			if (cast == 2) {
-				Game.shimmers.forEach(function(shimmer) {
-					if (shimmer.type == "golden") { shimmer.pop() }
-				})
 				setTimeout(function() {Game.Earn(1500*Game.computedMouseCps);}, 3000);
 				GrimboCookie.setConfig('grimoireCombo', false);
 				setTimeout(function() {GrimboCookie.setConfig('grimoireCombo', true);}, 30000);
@@ -307,27 +408,55 @@ var GrimboCookie = {
 		}
 	},
 	refill: () => {
+		GrimboCookie.pop();
 		let M = Game.Objects["Wizard tower"].minigame;
-		let Gambler = FortuneCookie.spellForecast(M.spellsById[6]);
-		let FTHoF = FortuneCookie.FateChecker(M.spellsCastTotal, (Game.season == "valentines" || Game.season == "easter") ? 1 : 0, M.getFailChance(M.spellsById[1]), false);
-		if (M.magic >= 0.95 * M.magicM){
-			if (Gambler.indexOf('Free Sugar Lump') == 119 || Gambler.indexOf('Free Sugar Lump') == 117) {
+		let Gambler = FortuneCookie.spellForecast(M.spellsById[6]).split("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		let FTHoF[];
+		for (let i = 0; i < FortuneCookie.config.spellForecastLength -1; i++) {
+			FTHoF[i] = FortuneCookie.FateChecker(M.spellsCastTotal + i, (Game.season == "valentines" || Game.season == "easter") ? 1 : 0, M.getFailChance(M.spellsById[1]), false);
+		}
+		if (M.magic == M.magicM){
+			let GamblerCost = 8 + 0.35 * M.magicM
+			let FTHoFCost = 10 + 0.6 * M.magicM
+			if (Gambler[1].indexOf('Free Sugar Lump') > -1) {
 				M.castSpell(M.spellsById[6]);
-				Game.shimmers.forEach(function(shimmer) {
-					if (shimmer.type == "golden") { shimmer.pop() }
-				})
-			} else if (FTHoF == "<td><span style=\"color:#DAA560;\">Free Sugar Lump</span><br/></td>") {
+				GrimboCookie.pop();
+			} else if (FTHoF[0].indexOf('Free Sugar Lump') > -1) {
 				M.castSpell(M.spellsById[1]);
-				Game.shimmers.forEach(function(shimmer) {
-					if (shimmer.type == "golden") { shimmer.pop() }
-				})
-			} else if (Gambler.indexOf('Click Frenzy') == 119 || FTHoF == "<td><span style=\"color:#4BB8F0;\">Click Frenzy</span><br/></td>") {
+				GrimboCookie.pop();
+			} else if (Game.canLumps && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 4 && M.magicM >= 2 * GamblerCost && M.magicM >= 4 * GamblerCost - 100) {
+				if (Gambler[1].indexOf('Building Special') > -1 && Gambler[2].indexOf('Building Special') > -1 && Gambler[3].indexOf('Building Special') > -1 && Gambler[4].indexOf('Click Frenzy') > -1) {
+					GrimboCookie.setConfig('comboState', 1);
+					GrimboCookie.setConfig('grimoireRefill', false);
+				}
+			} else if (Game.canLumps && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 3 && M.magicM >= 2 * GamblerCost && M.magicM >= 3 * GamblerCost - 100) {
+				if (Gambler[1].indexOf('Building Special') > -1 && Gambler[2].indexOf('Building Special') > -1 && Gambler[3].indexOf('Click Frenzy') > -1) {
+					GrimboCookie.setConfig('comboState', 2);
+					GrimboCookie.setConfig('grimoireRefill', false);
+				}
+			} else if (FortuneCookie.config.spellForecastLength >= 2 && M.magicM >= 2 * GamblerCost) {
+				if (Gambler[1].indexOf('Building Special') > -1 && Gambler[2].indexOf('Click Frenzy') > -1) {
+					GrimboCookie.setConfig('comboState', 3);
+					GrimboCookie.setConfig('grimoireRefill', false);
+				}
+			} else if (Game.canLumps && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 2 && M.magicM >= FTHoHCost + GamblerCost - 100) {
+				if (FTHoF[0].indexOf('Building Special') > -1 && Gambler[2].indexOf('Click Frenzy') > -1) {
+					GrimboCookie.setConfig('comboState', 4);
+					GrimboCookie.setConfig('grimoireRefill', false);
+				}
+			} else if (Game.canLumps && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 2 && M.magicM >= 2 * FTHoFCost - 100) {
+				if (FTHoF[0].indexOf('Building Special') > -1 && FTHoF[1].indexOf('Click Frenzy') > -1) {
+					GrimboCookie.setConfig('comboState', 5);
+					GrimboCookie.setConfig('grimoireRefill', false);
+				}
+			} else if (Gambler[1].indexOf('Click Frenzy') > -1) {
+				GrimboCookie.setConfig('comboState', 6);
 				GrimboCookie.setConfig('grimoireRefill', false);
-			} else if (Gambler.indexOf('Spontaneous Edifice (Nothing)') == 95 || Gambler.indexOf('Resurrect Abomination') == 95 || Gambler.indexOf('Resurrect Abomination') == 93) {
-				M.castSpell(M.spellsById[6]);
-			} else if (Object.keys(Game.buffs).length == 0 && (Gambler.indexOf('Stretch Time') == 95 || Gambler.indexOf('Stretch Time') == 93)) {
-				M.castSpell(M.spellsById[6]);
-			} else if (Gambler.indexOf('Haggler') == 95 || Gambler.indexOf('Haggler') == 93){
+			} else if (FTHoF[0].indexOf('Click Frenzy') > -1) {
+				GrimboCookie.setConfig('comboState', 7);
+				GrimboCookie.setConfig('grimoireRefill', false);
+			} else if (Gambler.indexOf('Spontaneous Edifice (Nothing)') == 95 || Gambler.indexOf('Resurrect Abomination') == 95 || Gambler.indexOf('Resurrect Abomination') == 93 ||
+			Object.keys(Game.buffs).length == 0 && (Gambler.indexOf('Stretch Time') == 95 || Gambler.indexOf('Stretch Time') == 93) || Gambler.indexOf('Haggler') == 95 || Gambler.indexOf('Haggler') == 93) {
 				M.castSpell(M.spellsById[6]);
 			} else {
 				M.castSpell(M.spellsById[4]);
