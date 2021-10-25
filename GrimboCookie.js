@@ -51,7 +51,7 @@ var GrimboCookie = {
 		}
 		if (!Game.mods["Fortune Cookie"]) {
 			Game.LoadMod('https://klattmose.github.io/CookieClicker/FortuneCookie.js');
-			console.log('Grimbo Cookie needs Fortune Cookie')
+			console.log('Grimbo Cookie needs Fortune Cookie');
 			setTimeout(GrimboCookie.Init, 1000);
 			return;
 		}
@@ -415,50 +415,44 @@ var GrimboCookie = {
 		let Gambler = FortuneCookie.spellForecast(M.spellsById[6]).split("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		let FTHoF = [];
 		for (let i = 0; i < FortuneCookie.config.spellForecastLength -1; i++) {
-			FTHoF[i] = FortuneCookie.FateChecker(M.spellsCastTotal + i, (Game.season == "valentines" || Game.season == "easter") ? 1 : 0, M.getFailChance(M.spellsById[1]), false);
+			let newLenght = FTHoF.push(FortuneCookie.FateChecker(M.spellsCastTotal + i, (Game.season == "valentines" || Game.season == "easter") ? 1 : 0, M.getFailChance(M.spellsById[1]), false));
 		}
 		if (M.magic == M.magicM){
-			let GamblerCost = 8 + 0.35 * M.magicM
-			let FTHoFCost = 10 + 0.6 * M.magicM
+			let GamblerCost = 8 + 0.35 * M.magicM;
+			let FTHoFCost = 10 + 0.6 * M.magicM;
 			if (Gambler[1].indexOf('Free Sugar Lump') > -1) {
 				M.castSpell(M.spellsById[6]);
 				GrimboCookie.pop();
 			} else if (FTHoF[0].indexOf('Free Sugar Lump') > -1) {
 				M.castSpell(M.spellsById[1]);
 				GrimboCookie.pop();
-			} else if (Game.canLumps() && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 4 && M.magicM >= 2 * GamblerCost && M.magicM >= 4 * GamblerCost - 100) {
-				if (Gambler[1].indexOf('Building Special') > -1 && Gambler[2].indexOf('Building Special') > -1 && Gambler[3].indexOf('Building Special') > -1 && Gambler[4].indexOf('Click Frenzy') > -1) {
-					GrimboCookie.setConfig('comboState', 1);
-					GrimboCookie.setConfig('grimoireRefill', false);
-				}
-			} else if (Game.canLumps() && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 3 && M.magicM >= 2 * GamblerCost && M.magicM >= 3 * GamblerCost - 100) {
-				if (Gambler[1].indexOf('Building Special') > -1 && Gambler[2].indexOf('Building Special') > -1 && Gambler[3].indexOf('Click Frenzy') > -1) {
-					GrimboCookie.setConfig('comboState', 2);
-					GrimboCookie.setConfig('grimoireRefill', false);
-				}
-			} else if (FortuneCookie.config.spellForecastLength >= 2 && M.magicM >= 2 * GamblerCost) {
-				if (Gambler[1].indexOf('Building Special') > -1 && Gambler[2].indexOf('Click Frenzy') > -1) {
-					GrimboCookie.setConfig('comboState', 3);
-					GrimboCookie.setConfig('grimoireRefill', false);
-				}
-			} else if (Game.canLumps() && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 2 && M.magicM >= FTHoHCost + GamblerCost - 100) {
-				if (FTHoF[0].indexOf('Building Special') > -1 && Gambler[2].indexOf('Click Frenzy') > -1) {
-					GrimboCookie.setConfig('comboState', 4);
-					GrimboCookie.setConfig('grimoireRefill', false);
-				}
-			} else if (Game.canLumps() && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 2 && M.magicM >= 2 * FTHoFCost - 100) {
-				if (FTHoF[0].indexOf('Building Special') > -1 && FTHoF[1].indexOf('Click Frenzy') > -1) {
-					GrimboCookie.setConfig('comboState', 5);
-					GrimboCookie.setConfig('grimoireRefill', false);
-				}
+			} else if (Game.canLumps() && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 4 && M.magicM >= 2 * GamblerCost && M.magicM >= 4 * GamblerCost - 100 &&
+			Gambler[1].indexOf('Building Special') > -1 && Gambler[2].indexOf('Building Special') > -1 && Gambler[3].indexOf('Building Special') > -1 && Gambler[4].indexOf('Click Frenzy') > -1) {
+				GrimboCookie.setConfig('comboState', 1);
+				GrimboCookie.setConfig('grimoireRefill', false);
+			} else if (Game.canLumps() && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 3 && M.magicM >= 2 * GamblerCost && M.magicM >= 3 * GamblerCost - 100 &&
+			Gambler[1].indexOf('Building Special') > -1 && Gambler[2].indexOf('Building Special') > -1 && Gambler[3].indexOf('Click Frenzy') > -1) {
+				GrimboCookie.setConfig('comboState', 2);
+				GrimboCookie.setConfig('grimoireRefill', false);
+			} else if (FortuneCookie.config.spellForecastLength >= 2 && M.magicM >= 2 * GamblerCost && Gambler[1].indexOf('Building Special') > -1 && Gambler[2].indexOf('Click Frenzy') > -1) {
+				GrimboCookie.setConfig('comboState', 3);
+				GrimboCookie.setConfig('grimoireRefill', false);
+			} else if (Game.canLumps() && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 2 && M.magicM >= FTHoFCost + GamblerCost - 100 &&
+			FTHoF[0].indexOf('Building Special') > -1 && Gambler[2].indexOf('Click Frenzy') > -1) {
+				GrimboCookie.setConfig('comboState', 4);
+				GrimboCookie.setConfig('grimoireRefill', false);
+			} else if (Game.canLumps() && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 2 && M.magicM >= 2 * FTHoFCost - 100 &&
+			FTHoF[0].indexOf('Building Special') > -1 && FTHoF[1].indexOf('Click Frenzy') > -1) {
+				GrimboCookie.setConfig('comboState', 5);
+				GrimboCookie.setConfig('grimoireRefill', false);
 			} else if (Gambler[1].indexOf('Click Frenzy') > -1) {
 				GrimboCookie.setConfig('comboState', 6);
 				GrimboCookie.setConfig('grimoireRefill', false);
 			} else if (FTHoF[0].indexOf('Click Frenzy') > -1) {
 				GrimboCookie.setConfig('comboState', 7);
 				GrimboCookie.setConfig('grimoireRefill', false);
-			} else if (Gambler.indexOf('Spontaneous Edifice (Nothing)') == 95 || Gambler.indexOf('Resurrect Abomination') == 95 || Gambler.indexOf('Resurrect Abomination') == 93 ||
-			Object.keys(Game.buffs).length == 0 && (Gambler.indexOf('Stretch Time') == 95 || Gambler.indexOf('Stretch Time') == 93) || Gambler.indexOf('Haggler') == 95 || Gambler.indexOf('Haggler') == 93) {
+			} else if (Gambler.indexOf('Spontaneous Edifice (Nothing)') > -1 || Gambler.indexOf('Resurrect Abomination') > -1 || Gambler.indexOf('Resurrect Abomination') > -1 ||
+			Object.keys(Game.buffs).length == 0 && (Gambler.indexOf('Stretch Time') > -1 || Gambler.indexOf('Stretch Time') > -1) || Gambler.indexOf('Haggler') > -1 || Gambler.indexOf('Haggler') > -1) {
 				M.castSpell(M.spellsById[6]);
 			} else {
 				M.castSpell(M.spellsById[4]);
