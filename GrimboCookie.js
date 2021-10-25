@@ -406,6 +406,7 @@ var GrimboCookie = {
 				setTimeout(function() {GrimboCookie.setConfig('grimoireCombo', true);}, 30000);
 				GrimboCookie.setConfig('grimoireRefill', true);
 				cast = 0;
+				GrimboCookie.setConfig('comboState', 1);
 			}
 		}
 	},
