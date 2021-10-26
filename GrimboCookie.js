@@ -361,7 +361,7 @@ var GrimboCookie = {
 						Game.Notify('Lump cooldown', 'Sugar Lumps refill is under cooldown. Wait ' + Math.round(Game.lumpRefill / 180) / 10 + ' minutes.', [29, 17]);
 						break;
 					}
-					if (GrimboCookie.getConfig('comboSugar') && M.magic >= FTHoFCost + GamblerCost - 100) {
+					if (GrimboCookie.getConfig('comboSugar') && M.magic >= GamblerCost + FTHoFCost - 100) {
 						M.castSpell(M.spellsById[1]);
 						GrimboCookie.pop();
 						M.lumpRefill.click();
