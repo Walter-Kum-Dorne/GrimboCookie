@@ -361,7 +361,7 @@ var GrimboCookie = {
 						Game.Notify('Lump cooldown', 'Sugar Lumps refill is under cooldown. Wait ' + Math.round(Game.lumpRefill / 180) / 10 + ' minutes.', [29, 17]);
 						break;
 					}
-					if (GrimboCookie.getConfig('comboSugar') && M.magic >= FTHoHCost + GamblerCost - 100) {
+					if (GrimboCookie.getConfig('comboSugar') && M.magic >= FTHoFCost + GamblerCost - 100) {
 						M.castSpell(M.spellsById[1]);
 						GrimboCookie.pop();
 						M.lumpRefill.click();
@@ -438,7 +438,7 @@ var GrimboCookie = {
 			} else if (FortuneCookie.config.spellForecastLength >= 2 && M.magicM >= 2 * GamblerCost && Gambler[1].indexOf('Building Special') > -1 && Gambler[2].indexOf('Click Frenzy') > -1) {
 				GrimboCookie.setConfig('comboState', 3);
 				GrimboCookie.setConfig('grimoireRefill', false);
-			} else if (Game.canLumps() && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 2 && M.magicM >= FTHoFCost + GamblerCost - 100 &&
+			} else if (Game.canLumps() && GrimboCookie.getConfig('comboSugar') && FortuneCookie.config.spellForecastLength >= 2 && M.magicM >= GamblerCost + FTHoFCost - 100 &&
 			FTHoF[0].indexOf('Building Special') > -1 && Gambler[2].indexOf('Click Frenzy') > -1) {
 				GrimboCookie.setConfig('comboState', 4);
 				GrimboCookie.setConfig('grimoireRefill', false);
